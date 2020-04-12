@@ -13,13 +13,13 @@ workflows:
     # Run the welcome/run job in its own container
     jobs:
       - terraform/plan:
-          path: tf
+          path: infrastructure
           filters:
             branches:
               ignore: master
 
       - terraform/apply:
-          path: tf
+          path: infrastructure
           filters:
             branches:
               only: master
