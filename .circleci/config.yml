@@ -9,7 +9,7 @@ default_config: &default_config
     - image: *base_image
   working_directory: *working_directory
   environment:
-    BASH_ENV: ~/.bashrc
+    BASH_ENV: /root/.bashrc
     TERRAFORM_ENV: ~/project/infrastructure
 
 repo_cache_key: &repo_cache_key v2-repo-{{ .Branch }}-{{ .Revision }}
