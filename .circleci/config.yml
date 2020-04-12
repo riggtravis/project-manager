@@ -31,7 +31,7 @@ set_terraform_environment: &set_terraform_environment
     command: |
       cd && touch $BASH_ENV
       pwd
-      ls
+      ls infrastructure
 
 terraform_init: &terraform_init
   run:
