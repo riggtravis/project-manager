@@ -13,12 +13,14 @@ workflows:
     # Run the welcome/run job in its own container
     jobs:
       - terraform/plan:
+          executor: terraform/terraform-0_12
           path: infrastructure
           filters:
             branches:
               ignore: master
 
       - terraform/apply:
+          executor: terraform/terraform-0_12
           path: infrastructure
           filters:
             branches:
