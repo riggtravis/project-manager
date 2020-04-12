@@ -6,22 +6,31 @@ orbs:
   # Declare a dependency on the terraform-orb
   terraform: ovotech/terraform@1.6.5
 
-# Orchestrate or schedule a set of jobs
-workflows:
-  # Name the workflow "terraform"
-  terraform:
-    # Run the welcome/run job in its own container
-    jobs:
+jobs:
+  terraform_plan:
+    executor: terraform/terraform-0_12
+    steps:
+      - checkout
       - terraform/plan:
-          executor: terraform/terraform-0_12
           path: infrastructure
-          filters:
-            branches:
-              ignore: master
 
+  terraform_apply:
+    executor: terraform/terraform-0_12
+    steps:
+      - checkout
       - terraform/apply:
-          executor: terraform/terraform-0_12
           path: infrastructure
+
+workflows:
+  commit:
+    jobs:
+      - terraform_plan:
           filters:
             branches:
-              only: master
+              ignore:
+                master
+      - terraform_apply:
+          filters:
+            branches:
+              only:
+                master
