@@ -40,6 +40,7 @@ resource "aws_cloud9_environment_ec2" "c9" {
   description                 = "A c9 environment for managing this project."
   instance_type               = "t3.nano"
   automatic_stop_time_minutes = "30"
+
   subnet_id = module.vpc.public_subnets[
     random_integer.single_subnet_number.result
   ]
