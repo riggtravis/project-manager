@@ -2,15 +2,15 @@
 version: 2.1
 reference:
 base_image: &base_image hashicorp/terraform:light
-working_directory: &working_directory ~/infrastructure
+working_directory: &working_directory ~/project
 
 default_config: &default_config
   docker:
     - image: *base_image
   working_directory: *working_directory
   environment:
-    BASH_ENV: /root/.bashrc
-    TERRAFORM_ENV: ~/infrastructure/
+    BASH_ENV: ~/.bashrc
+    TERRAFORM_ENV: ~/project/infrastructure
 
 repo_cache_key: &repo_cache_key v2-repo-{{ .Branch }}-{{ .Revision }}
 
@@ -30,15 +30,13 @@ set_terraform_environment: &set_terraform_environment
     name: set terraform environment
     command: |
       cd && touch $BASH_ENV
-      pwd
-      ls infrastructure
 
 terraform_init: &terraform_init
   run:
     name: terraform init
     command: |
       source $BASH_ENV
-      cd /root/infrastructure/
+      cd $TERRAFORM_ENV
       terraform init
 
 apply_job: &apply_job
@@ -53,7 +51,7 @@ apply_job: &apply_job
         name: terraform apply
         command: |
           source $BASH_ENV
-          cd /root/infrastructure/
+          cd $TERRAFORM_ENV
           terraform apply
     - *save_repo
 
@@ -68,8 +66,7 @@ jobs:
           name: terraform fmt
           command: |
             source $BASH_ENV
-            cd /root/infrastructure/
-            terraform init
+            cd $TERRAFORM_ENV
             terraform fmt
       - *save_repo
 
@@ -83,7 +80,7 @@ jobs:
           name: terraform plan
           command: |
             source $BASH_ENV
-            cd /root/infrastructure/
+            cd $TERRAFORM_ENV
             terraform plan
 
   apply:
@@ -101,7 +98,7 @@ jobs:
           name: destroy environment
           command: |
             source $BASH_ENV
-            cd /root/infrastructure/
+            cd $TERRAFORM_ENV
             terraform destroy --auto-approve
 
 workflows:
