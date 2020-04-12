@@ -12,7 +12,7 @@ default_config: &default_config
     BASH_ENV: /root/.bashrc
     TERRAFORM_ENV: ~/infrastructure/
 
-repo_cache_key: &repo_cache_key v1-repo-{{ .Branch }}-{{ .Revision }}
+repo_cache_key: &repo_cache_key v2-repo-{{ .Branch }}-{{ .Revision }}
 
 # Restore repo from cache
 restore_repo: &restore_repo
