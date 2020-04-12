@@ -14,8 +14,12 @@ workflows:
     jobs:
       - terraform/plan:
           path: tf
-          filters.branches.ignore: master
+          filters:
+            branches:
+              ignore: master
 
       - terraform/apply:
           path: tf
-          filters.branches.only: master
+          filters:
+            branches:
+              only: master
