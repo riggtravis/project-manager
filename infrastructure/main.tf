@@ -1,3 +1,12 @@
+terraform {
+  backend "s3" {
+    encrypt = true
+    bucket  = "os-manager-project-terraform-state"
+    key     = "tfstate"
+    region  = "us-east-1"
+  }
+}
+
 provider "aws" {
   region = "us-east-1"
 }
@@ -44,4 +53,68 @@ resource "aws_cloud9_environment_ec2" "c9" {
   subnet_id = module.vpc.public_subnets[
     random_integer.single_subnet_number.result
   ]
+}
+
+resource "aws_s3_bucket" "log_bucket" {
+  bucket = "os-management-project-s3-logs"
+  acl    = "log-delivery-write"
+
+  lifecycle_rule {
+    id      = "log"
+    enabled = true
+
+    transition {
+      days          = 30
+      storage_class = "ONEZONE_IA"
+    }
+
+    transition {
+      days          = 60
+      storage_class = "GLACIER"
+    }
+
+    expiration {
+      days = 90
+    }
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
+}
+
+resource "aws_s3_bucket" "terraform_state_bucket" {
+  bucket = "os-manager-project-terraform-state"
+  acl    = "private"
+
+  versioning {
+    enabled = false
+  }
+
+  logging {
+    target_bucket = aws_s3_bucket.log_bucket.id
+    target_prefix = "terraform_state/"
+  }
+
+  lifecycle_rule {
+    id      = "state"
+    enabled = true
+
+    transition {
+      days          = 30
+      storage_class = "ONEZONE_IA"
+    }
+  }
+
+  server_side_encryption_configuration {
+    rule {
+      apply_server_side_encryption_by_default {
+        sse_algorithm = "AES256"
+      }
+    }
+  }
 }
