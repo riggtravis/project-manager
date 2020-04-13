@@ -63,7 +63,8 @@ jobs:
     <<: *default_config
     steps:
       - checkout
-      - aws-cli/install
+      - aws-cli/install:
+          version: "1"
       - aws-cli/setup
       - *set_terraform_environment
       - *terraform_init
