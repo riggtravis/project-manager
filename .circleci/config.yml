@@ -65,7 +65,7 @@ jobs:
       - checkout
       - run:
           name: install python
-            command: "apk --no-cache add python3"
+          command: "apk --no-cache add python3"
       - aws-cli/install:
           version: "1"
       - aws-cli/setup
