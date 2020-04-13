@@ -14,7 +14,7 @@ default_config: &default_config
     - image: *base_image
   environment:
     BASH_ENV: /root/.bashrc
-    TERRAFORM_ENV: /root/project/infrastructure
+    TERRAFORM_ENV: /root/project/infrastructure/terraform
 
 repo_cache_key: &repo_cache_key v2-repo-{{ .Branch }}-{{ .Revision }}
 
