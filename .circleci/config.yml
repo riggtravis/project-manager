@@ -32,8 +32,7 @@ save_repo: &save_repo
 set_terraform_environment: &set_terraform_environment
   run:
     name: set terraform environment
-    command: |
-      cd && touch $BASH_ENV
+    command: "cd && touch $BASH_ENV"
 
 terraform_init: &terraform_init
   run:
@@ -64,6 +63,9 @@ jobs:
     <<: *default_config
     steps:
       - checkout
+      - run:
+          name: install curl
+          command: apt-get install curl
       - aws-cli/setup
       - *set_terraform_environment
       - *terraform_init
