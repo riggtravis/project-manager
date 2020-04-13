@@ -11,6 +11,8 @@ provider "aws" {
   region = "us-east-1"
 }
 
+data "aws_caller_identity" "current" {}
+
 data "aws_availability_zones" "available" {
   state = "available"
 }
@@ -26,6 +28,7 @@ resource "random_integer" "single_subnet_number" {
   max = local.availability_zone_count - 1
 }
 
+# Project infrastructure
 module "vpc" {
   source = "terraform-aws-modules/vpc/aws"
 
@@ -55,6 +58,42 @@ resource "aws_cloud9_environment_ec2" "c9" {
   ]
 }
 
+# Tool permissions
+resource "aws_iam_group" "tools" {
+  name = "tools"
+  path = "/tools/"
+}
+
+resource "aws_iam_group_policy_attachment" "tools" {
+  group = aws_iam_group.tools.name
+
+  policy_arn = "arn:aws:iam::${
+    data.aws_caller_identity.current.account_id
+  }:policy/tools/ContinuousIntegrationPolicy"
+}
+
+
+# CircleCI
+resource "aws_iam_user" "circleci" {
+  name = "circleci"
+  path = "/continuous-integration/"
+}
+
+resource "aws_iam_access_key" "circleci" {
+  user = aws_iam_user.circleci.name
+}
+
+# Tool permission associations
+resource "aws_iam_group_membership" "tools" {
+  name  = "tool-group-membership"
+  group = aws_iam_group.tools.name
+
+  users = [
+    aws_iam_user.circleci.name
+  ]
+}
+
+# Terraform infrastructure
 resource "aws_s3_bucket" "log_bucket" {
   bucket = "os-management-project-s3-logs"
   acl    = "log-delivery-write"
@@ -117,4 +156,16 @@ resource "aws_s3_bucket" "terraform_state_bucket" {
       }
     }
   }
+}
+
+output "circleci_access_key" {
+  value       = aws_iam_access_key.circleci.id
+  description = "The access key used by CircleCI. Secret"
+  sensitive   = true
+}
+
+output "circleci_secret_key" {
+  value       = aws_iam_access_key.circleci.secret
+  description = "The SECRET key used by CircleCI. Even more secret."
+  sensitive   = true
 }

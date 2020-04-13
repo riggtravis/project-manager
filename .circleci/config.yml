@@ -4,10 +4,14 @@ reference:
 base_image: &base_image hashicorp/terraform:light
 working_directory: &working_directory ~/project
 
+orbs:
+  aws-cli: circleci/aws-cli@1.0.0
+
 default_config: &default_config
+  executor: aws-cli/default
+  working_directory: *working_directory
   docker:
     - image: *base_image
-  working_directory: *working_directory
   environment:
     BASH_ENV: /root/.bashrc
     TERRAFORM_ENV: /root/project/infrastructure
@@ -60,6 +64,7 @@ jobs:
     <<: *default_config
     steps:
       - checkout
+      - aws-cli/setup
       - *set_terraform_environment
       - *terraform_init
       - run:
