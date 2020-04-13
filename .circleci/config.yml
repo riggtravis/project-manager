@@ -65,9 +65,7 @@ jobs:
       - checkout
       - run:
           name: install curl
-          command: |
-            cat /etc/os-release
-            apt-get install curl
+          command: apk add curl
       - aws-cli/setup
       - *set_terraform_environment
       - *terraform_init
