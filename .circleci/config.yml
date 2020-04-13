@@ -67,7 +67,7 @@ jobs:
           name: install curl
           command: |
             apk --no-cache add curl
-            echo "export PATH=$PATH:~/.local/bin/" >> ~/$BASH_ENV
+            echo "export PATH=$PATH:~/.local/bin/" >> $BASH_ENV
       - aws-cli/setup
       - *set_terraform_environment
       - *terraform_init
