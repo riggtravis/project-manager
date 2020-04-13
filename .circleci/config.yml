@@ -65,7 +65,9 @@ jobs:
       - checkout
       - run:
           name: install curl
-          command: "apk --no-cache add curl sudo"
+          command: |
+            apk --no-cache add curl sudo
+            echo "Set disable_coredump false" >> /etc/sudo.conf"
       - aws-cli/setup
       - *set_terraform_environment
       - *terraform_init
