@@ -65,7 +65,7 @@ jobs:
       - checkout
       - run:
           name: install curl
-          command: apk add curl
+          command: "apk --no-cache add curl sudo"
       - aws-cli/setup
       - *set_terraform_environment
       - *terraform_init
