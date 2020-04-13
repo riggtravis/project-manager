@@ -65,7 +65,7 @@ jobs:
       - checkout
       - run:
           name: install python
-          command: "apk --no-cache add python3 curl"
+          command: "apk --no-cache add python3 curl sudo"
       - aws-cli/install:
           version: "1"
       - aws-cli/setup
